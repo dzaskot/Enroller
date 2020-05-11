@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.enroller.model.Meeting;
+import com.company.enroller.model.MeetingParticipant;
 import com.company.enroller.model.Participant;
+import com.company.enroller.persistence.MeetingParticipantService;
 import com.company.enroller.persistence.MeetingService;
 import com.company.enroller.persistence.ParticipantService;
 
@@ -22,6 +24,10 @@ public class MeetingRestController {
 
 	@Autowired
 	MeetingService meetingService;
+	@Autowired
+	ParticipantService participantService;
+	@Autowired
+	MeetingParticipantService meetingParticipantService;
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public ResponseEntity<?> getMeetings() {
@@ -50,5 +56,25 @@ public class MeetingRestController {
 
 		meetingService.add(meeting);
 		return new ResponseEntity<Meeting>(meeting, HttpStatus.CREATED);
+	}
+	
+	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
+	public ResponseEntity<?> registerParticipantToMeeting(@PathVariable("id") Long id, @RequestBody Participant participant) {
+		Meeting foundMeeting = meetingService.findById(id);
+		Participant foundParticipant = participantService.findByLogin(participant.getLogin());
+		if (foundMeeting == null) {
+			return new ResponseEntity<String>(
+					"Unable to register. Meeting with id " + foundMeeting.getId() + " doesn't exist",
+					HttpStatus.NOT_FOUND);
+		}
+		if (foundParticipant == null) {
+			return new ResponseEntity<String>(
+					"Unable to register. Participant with login " + foundParticipant.getLogin() + " doesn't exist",
+					HttpStatus.NOT_FOUND);
+		}
+		
+		MeetingParticipant meetingParticipant = new MeetingParticipant(foundMeeting, foundParticipant);
+		meetingParticipantService.addMeetingParticipant(meetingParticipant);
+		return new ResponseEntity<Participant>(foundParticipant, HttpStatus.OK);
 	}
 }

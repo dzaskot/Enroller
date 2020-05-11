@@ -14,6 +14,7 @@
 	
 		<mapping class="com.company.enroller.model.Meeting"/>
 		<mapping class="com.company.enroller.model.Participant"/>
+		<mapping class="com.company.enroller.model.MeetingParticipant"/>
 		
 	</session-factory>
 </hibernate-configuration>
