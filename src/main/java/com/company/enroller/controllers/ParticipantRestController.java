@@ -42,7 +42,7 @@ public class ParticipantRestController {
 	    Participant foundParticipant = participantService.findByLogin(participant.getLogin());
 	if (foundParticipant != null) { 
 		return new ResponseEntity<String>(
-				"Unable to register. Participant with login " + participant.getLogin() + "already exist",
+				"Unable to register. Participant with login " + participant.getLogin() + " already exist",
 				HttpStatus.CONFLICT	);
 	} 
 
