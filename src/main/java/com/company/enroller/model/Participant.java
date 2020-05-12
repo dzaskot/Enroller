@@ -1,8 +1,12 @@
 package com.company.enroller.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -14,7 +18,7 @@ public class Participant {
 
 	@Column
 	private String password;
-
+	
 	public String getLogin() {
 		return login;
 	}
@@ -30,4 +34,5 @@ public class Participant {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
 }

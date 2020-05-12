@@ -45,8 +45,7 @@ public class MeetingService {
 	}
 
 	public Collection<Participant> getParticipants(Meeting meeting) {
-		String hql = "SELECT p FROM Participant LEFT JOIN MeetingParticipant.participant LEFT JOIN Meeting.id WHERE Meeting.id = :meetingID";
-		return session.createQuery(hql).setParameter("meetingID", meeting.getId()).list();	
+		return this.findById(meeting.getId()).getParticipants();
 	}
 
 }
