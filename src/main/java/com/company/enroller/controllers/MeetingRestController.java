@@ -58,13 +58,30 @@ public class MeetingRestController {
 		return new ResponseEntity<Meeting>(meeting, HttpStatus.CREATED);
 	}
 	
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT) 
+	public ResponseEntity<?> updateMeeting(@PathVariable("id") long id, @RequestBody Meeting updatedMeeting){
+	    Meeting foundMeeting = meetingService.findById(id);
+	    if (foundMeeting == null) { 
+	    	return new ResponseEntity<String>(
+					"Unable to update. Meeting with id " + id + " doesn't exist",
+					HttpStatus.NOT_FOUND);
+		} 
+
+	    foundMeeting.setTitle(updatedMeeting.getTitle());
+	    foundMeeting.setDescription(updatedMeeting.getDescription());
+	    foundMeeting.setDate(updatedMeeting.getDate());
+	    
+	    meetingService.update(foundMeeting);
+	    return new ResponseEntity<Meeting>(foundMeeting, HttpStatus.OK); 
+	}
+	
 	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
-	public ResponseEntity<?> registerParticipantToMeeting(@PathVariable("id") Long id, @RequestBody Participant participant) {
+	public ResponseEntity<?> registerParticipantToMeeting(@PathVariable("id") long id, @RequestBody Participant participant) {
 		Meeting foundMeeting = meetingService.findById(id);
 		Participant foundParticipant = participantService.findByLogin(participant.getLogin());
 		if (foundMeeting == null) {
 			return new ResponseEntity<String>(
-					"Unable to register. Meeting with id " + foundMeeting.getId() + " doesn't exist",
+					"Unable to register. Meeting with id " + id + " doesn't exist",
 					HttpStatus.NOT_FOUND);
 		}
 		if (foundParticipant == null) {
@@ -76,5 +93,18 @@ public class MeetingRestController {
 		MeetingParticipant meetingParticipant = new MeetingParticipant(foundMeeting, foundParticipant);
 		meetingParticipantService.addMeetingParticipant(meetingParticipant);
 		return new ResponseEntity<Participant>(foundParticipant, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/{id}/participants", method = RequestMethod.GET)
+	public ResponseEntity<?> getMeetingParticipants(@PathVariable("id") long id) {
+		Meeting foundMeeting = meetingService.findById(id);
+		if (foundMeeting == null) {
+			return new ResponseEntity<String>(
+					"Unable to register. Meeting with id " + id + " doesn't exist",
+					HttpStatus.NOT_FOUND);
+		}
+		
+		Collection<Participant> participants = meetingService.getParticipants(foundMeeting);
+		return new ResponseEntity<Collection<Participant>>(participants, HttpStatus.OK);
 	}
 }

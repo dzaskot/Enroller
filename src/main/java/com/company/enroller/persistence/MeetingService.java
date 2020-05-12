@@ -36,5 +36,17 @@ public class MeetingService {
 		transaction.commit();
 		return meeting;
 	}
+	
+	public Meeting update(Meeting meeting){
+		Transaction transaction = this.session.beginTransaction();
+		session.update(meeting);
+		transaction.commit();
+		return meeting;
+	}
+
+	public Collection<Participant> getParticipants(Meeting meeting) {
+		String hql = "SELECT p FROM Participant LEFT JOIN MeetingParticipant.participant LEFT JOIN Meeting.id WHERE Meeting.id = :meetingID";
+		return session.createQuery(hql).setParameter("meetingID", meeting.getId()).list();	
+	}
 
 }

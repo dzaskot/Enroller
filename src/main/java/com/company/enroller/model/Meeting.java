@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "meeting")
+@org.hibernate.annotations.Entity(dynamicUpdate = true, selectBeforeUpdate = true)
 public class Meeting {
 
 	@Id
