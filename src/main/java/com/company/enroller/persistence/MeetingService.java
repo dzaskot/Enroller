@@ -37,6 +37,13 @@ public class MeetingService {
 		return meeting;
 	}
 	
+	public void delete(Meeting meeting){
+		Transaction transaction = this.session.beginTransaction();
+		Query query = session.createQuery("DELETE FROM MeetingParticipant mp WHERE meeting_id= :id").setLong("id", meeting.getId());
+		session.delete(meeting);
+		transaction.commit();
+	}
+	
 	public Meeting update(Meeting meeting){
 		Transaction transaction = this.session.beginTransaction();
 		session.update(meeting);

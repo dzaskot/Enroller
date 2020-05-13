@@ -58,6 +58,19 @@ public class MeetingRestController {
 		return new ResponseEntity<Meeting>(meeting, HttpStatus.CREATED);
 	}
 	
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<?> deleteMeeting(@PathVariable("id") long id) {
+		Meeting foundMeeting = meetingService.findById(id);
+		if (foundMeeting == null) {
+			return new ResponseEntity<String>(
+					"Unable to delete. Meeting with id " + id + " doesn't exist",
+					HttpStatus.BAD_REQUEST);
+		}
+
+		meetingService.delete(foundMeeting);
+		return new ResponseEntity<Meeting>(foundMeeting, HttpStatus.CREATED);
+	}
+	
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT) 
 	public ResponseEntity<?> updateMeeting(@PathVariable("id") long id, @RequestBody Meeting updatedMeeting){
 	    Meeting foundMeeting = meetingService.findById(id);
