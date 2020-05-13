@@ -80,24 +80,5 @@ public class ParticipantRestController {
 		participantService.update(foundParticipant);
 		return new ResponseEntity<Participant>(foundParticipant, HttpStatus.OK);
 	}
-
-	@RequestMapping(value = "/{login}/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<?> deleteParticipantFromMeeting(@PathVariable("login") String login, @PathVariable("id") Long id) {
-		Meeting foundMeeting = meetingService.findById(id);
-		Participant foundParticipant = participantService.findByLogin(login);
-		if (foundMeeting == null) {
-			return new ResponseEntity<String>(
-					"Unable to delete. Meeting with id " + id + " doesn't exist",
-					HttpStatus.NOT_FOUND);
-		}
-		if (foundParticipant == null) {
-			return new ResponseEntity<String>(
-					"Unable to register. Participant with login: " + login + " doesn't exist",
-					HttpStatus.NOT_FOUND);
-		}
-		
-		meetingParticipantService.deleteFromMeeting(foundParticipant,foundMeeting);
-		return new ResponseEntity<Participant>(foundParticipant, HttpStatus.OK);
-	}
 	
 }

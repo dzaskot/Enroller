@@ -79,19 +79,25 @@ public class MeetingRestController {
 					"Unable to update. Meeting with id " + id + " doesn't exist",
 					HttpStatus.NOT_FOUND);
 		} 
-
-	    foundMeeting.setTitle(updatedMeeting.getTitle());
-	    foundMeeting.setDescription(updatedMeeting.getDescription());
-	    foundMeeting.setDate(updatedMeeting.getDate());
+		if(updatedMeeting.getTitle() != null) {
+			foundMeeting.setTitle(updatedMeeting.getTitle());
+		}
+		if(updatedMeeting.getDescription() != null) {
+			foundMeeting.setDescription(updatedMeeting.getDescription());
+		}
+		if(updatedMeeting.getDate()!= null) {
+			foundMeeting.setDate(updatedMeeting.getDate());
+		}
 	    
 	    meetingService.update(foundMeeting);
+
 	    return new ResponseEntity<Meeting>(foundMeeting, HttpStatus.OK); 
 	}
 	
-	@RequestMapping(value = "/{id}", method = RequestMethod.POST)
-	public ResponseEntity<?> registerParticipantToMeeting(@PathVariable("id") long id, @RequestBody Participant participant) {
+	@RequestMapping(value = "/{id}/{login}", method = RequestMethod.POST)
+	public ResponseEntity<?> registerParticipantToMeeting(@PathVariable("id") long id, @PathVariable("login") String login) {
 		Meeting foundMeeting = meetingService.findById(id);
-		Participant foundParticipant = participantService.findByLogin(participant.getLogin());
+		Participant foundParticipant = participantService.findByLogin(login);
 		if (foundMeeting == null) {
 			return new ResponseEntity<String>(
 					"Unable to register. Meeting with id " + id + " doesn't exist",
@@ -99,12 +105,31 @@ public class MeetingRestController {
 		}
 		if (foundParticipant == null) {
 			return new ResponseEntity<String>(
-					"Unable to register. Participant with login " + participant.getLogin() + " doesn't exist",
+					"Unable to register. Participant with login " + login + " doesn't exist",
 					HttpStatus.NOT_FOUND);
 		}
 		
 		MeetingParticipant meetingParticipant = new MeetingParticipant(foundMeeting, foundParticipant);
 		meetingParticipantService.addMeetingParticipant(meetingParticipant);
+		return new ResponseEntity<Participant>(foundParticipant, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/{id}/{login}", method = RequestMethod.DELETE)
+	public ResponseEntity<?> deleteParticipantFromMeeting(@PathVariable("id") Long id, @PathVariable("login") String login) {
+		Meeting foundMeeting = meetingService.findById(id);
+		Participant foundParticipant = participantService.findByLogin(login);
+		if (foundMeeting == null) {
+			return new ResponseEntity<String>(
+					"Unable to delete. Meeting with id " + id + " doesn't exist",
+					HttpStatus.NOT_FOUND);
+		}
+		if (foundParticipant == null) {
+			return new ResponseEntity<String>(
+					"Unable to register. Participant with login: " + login + " doesn't exist",
+					HttpStatus.NOT_FOUND);
+		}
+
+		meetingParticipantService.deleteFromMeeting(foundParticipant,foundMeeting);
 		return new ResponseEntity<Participant>(foundParticipant, HttpStatus.OK);
 	}
 	
