@@ -2,10 +2,12 @@ package com.company.enroller.persistence;
 
 import java.util.Collection;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Component;
 
+import com.company.enroller.model.Meeting;
 import com.company.enroller.model.Participant;
 
 @Component("participantService")
@@ -44,6 +46,14 @@ public class ParticipantService {
 		session.update(participant);
 		transaction.commit();
 		return participant;
+	}
+	
+	public void deleteFromMeeting(Participant participant, Meeting meeting){
+		Transaction transaction = this.session.beginTransaction();
+		Query query = session.createQuery("DELETE FROM MeetingParticipant mp WHERE login= :login AND meeting_id= :meeting_id");
+		query.setString("login", participant.getLogin());
+		query.setLong("meeting_id", meeting.getId());
+		transaction.commit();
 	}
 
 }

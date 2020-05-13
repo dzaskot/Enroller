@@ -99,7 +99,7 @@ public class MeetingRestController {
 		}
 		if (foundParticipant == null) {
 			return new ResponseEntity<String>(
-					"Unable to register. Participant with login " + foundParticipant.getLogin() + " doesn't exist",
+					"Unable to register. Participant with login " + participant.getLogin() + " doesn't exist",
 					HttpStatus.NOT_FOUND);
 		}
 		
@@ -120,4 +120,5 @@ public class MeetingRestController {
 		Collection<Participant> participants = meetingService.getParticipants(foundMeeting);
 		return new ResponseEntity<Collection<Participant>>(participants, HttpStatus.OK);
 	}
+	
 }
