@@ -1,6 +1,7 @@
 package com.company.enroller.persistence;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -28,8 +29,14 @@ public class MeetingService {
 	
 	public Meeting findById(Long id){
 		return (Meeting) session.get(Meeting.class, id);
-	}	
-	
+	}
+
+	public List<Meeting> findByTitle(String string){
+		Query query = session.createQuery("FROM Meeting as m WHERE m.title LIKE :searchString");
+		query.setParameter("searchString", "%" + string + "%");
+		return query.list();
+	}
+
 	public Meeting add(Meeting meeting){
 		Transaction transaction = this.session.beginTransaction();
 		session.save(meeting);
