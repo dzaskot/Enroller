@@ -14,7 +14,7 @@ public class Participant {
 
 	@Column
 	private String password;
-
+	
 	public String getLogin() {
 		return login;
 	}
@@ -30,4 +30,5 @@ public class Participant {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
 }
