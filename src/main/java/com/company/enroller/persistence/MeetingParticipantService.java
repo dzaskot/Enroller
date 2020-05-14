@@ -1,5 +1,6 @@
 package com.company.enroller.persistence;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Component;
@@ -7,6 +8,8 @@ import org.springframework.stereotype.Component;
 import com.company.enroller.model.Meeting;
 import com.company.enroller.model.MeetingParticipant;
 import com.company.enroller.model.Participant;
+
+import java.util.Collection;
 
 @Component("meetingParticipantService")
 public class MeetingParticipantService {
@@ -34,4 +37,9 @@ public class MeetingParticipantService {
 		transaction.commit();
 	}
 
+	public Collection<Meeting> getParticipantMeetings(Participant participant) {
+		String hql = "SELECT mp.meeting FROM MeetingParticipant as mp WHERE mp.participant.login= :login";
+		Query query = session.createQuery(hql).setString("login", participant.getLogin());
+		return query.list();
+	}
 }

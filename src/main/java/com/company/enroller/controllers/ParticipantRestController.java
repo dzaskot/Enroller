@@ -44,6 +44,19 @@ public class ParticipantRestController {
 		return new ResponseEntity<Participant>(participant, HttpStatus.OK);
 	}
 
+	@RequestMapping(value = "/{login}/meetings", method = RequestMethod.GET)
+	public ResponseEntity<?> getMeetingsByLogin(@PathVariable("login") String login) {
+		Participant foundParticipant = participantService.findByLogin(login);
+		if (foundParticipant == null) {
+			return new ResponseEntity<String>(
+					"There is no participant with: " + login + " login",
+					HttpStatus.NOT_FOUND);
+		}
+
+		Collection<Meeting> meetings = meetingParticipantService.getParticipantMeetings(foundParticipant);
+		return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
+	}
+
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	public ResponseEntity<?> registerParticipant(@RequestBody Participant participant) {
 		Participant foundParticipant = participantService.findByLogin(participant.getLogin());

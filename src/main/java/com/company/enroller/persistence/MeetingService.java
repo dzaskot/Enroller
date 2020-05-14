@@ -21,7 +21,7 @@ public class MeetingService {
 	}
 
 	public Collection<Meeting> getAll() {
-		String hql = "FROM Meeting";
+		String hql = "FROM Meeting m ORDER BY LOWER(m.title) ";
 		Query query = session.createQuery(hql);
 		return query.list();
 	}
